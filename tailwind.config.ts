@@ -6,7 +6,7 @@ export default {
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
+		"./src/**/*.{ts,tsx}"
 	],
 	prefix: "",
 	theme: {
@@ -61,6 +61,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Эко-цвета
+				nature: {
+					'earth': '#8B5A2B',
+					'leaf': '#4B7F52',
+					'moss': '#7D8C35',
+					'bark': '#786452',
+					'forest': '#2E4600',
+					'soil': '#5C4033',
+					'sky': '#87CEEB',
+					'mountain': '#6A6A6A',
+					'stone': '#A9A9A9',
+					'water': '#1E90FF'
 				}
 			},
 			borderRadius: {
@@ -84,11 +97,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'grow-tree': {
+					'0%': { transform: 'scaleY(0)', transformOrigin: 'bottom' },
+					'100%': { transform: 'scaleY(1)', transformOrigin: 'bottom' }
+				},
+				'leaves-wave': {
+					'0%, 100%': { transform: 'rotate(-5deg)' },
+					'50%': { transform: 'rotate(5deg)' }
+				},
+				'counter-change': {
+					'0%': { transform: 'translateY(100%)' },
+					'100%': { transform: 'translateY(0)' }
+				},
+				'product-grow': {
+					'0%': { transform: 'translateY(20px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'grow-tree': 'grow-tree 2s ease-out',
+				'leaves-wave': 'leaves-wave 3s ease-in-out infinite',
+				'counter-change': 'counter-change 0.5s ease-out',
+				'product-grow': 'product-grow 1s ease-out'
 			}
 		}
 	},
