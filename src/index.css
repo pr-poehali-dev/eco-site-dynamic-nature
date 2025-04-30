@@ -4,83 +4,83 @@
 
 @layer base {
   :root {
-    --background: 79 43% 96%;
-    --foreground: 120 8% 15%;
+    --background: 142 60% 97%;
+    --foreground: 145 30% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 120 8% 15%;
+    --card-foreground: 145 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 120 8% 15%;
+    --popover-foreground: 145 30% 15%;
 
-    --primary: 120 40% 35%;
-    --primary-foreground: 120 5% 98%;
+    --primary: 145 55% 40%;
+    --primary-foreground: 145 5% 98%;
 
-    --secondary: 60 40% 40%;
-    --secondary-foreground: 60 5% 10%;
+    --secondary: 152 40% 92%;
+    --secondary-foreground: 152 50% 25%;
 
-    --muted: 120 20% 90%;
-    --muted-foreground: 120 5% 40%;
+    --muted: 145 20% 92%;
+    --muted-foreground: 145 15% 40%;
 
-    --accent: 35 40% 50%;
-    --accent-foreground: 35 5% 10%;
+    --accent: 25 80% 60%;
+    --accent-foreground: 25 5% 10%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 120 15% 85%;
-    --input: 120 15% 85%;
-    --ring: 120 40% 35%;
+    --border: 145 15% 90%;
+    --input: 145 15% 90%;
+    --ring: 145 55% 40%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 120 30% 96%;
-    --sidebar-foreground: 120 8% 26.1%;
-    --sidebar-primary: 120 40% 35%;
+    --sidebar-background: 145 30% 96%;
+    --sidebar-foreground: 145 30% 26.1%;
+    --sidebar-primary: 145 55% 40%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 60 40% 95.9%;
-    --sidebar-accent-foreground: 60 40% 10%;
-    --sidebar-border: 120 13% 91%;
-    --sidebar-ring: 120 91.2% 59.8%;
+    --sidebar-accent: 152 40% 95.9%;
+    --sidebar-accent-foreground: 152 50% 10%;
+    --sidebar-border: 145 13% 91%;
+    --sidebar-ring: 145 91.2% 59.8%;
   }
 
   .dark {
-    --background: 120 15% 10%;
-    --foreground: 120 10% 98%;
+    --background: 145 25% 10%;
+    --foreground: 145 10% 98%;
 
-    --card: 120 15% 10%;
-    --card-foreground: 120 10% 98%;
+    --card: 145 25% 12%;
+    --card-foreground: 145 10% 98%;
 
-    --popover: 120 15% 10%;
-    --popover-foreground: 120 10% 98%;
+    --popover: 145 25% 12%;
+    --popover-foreground: 145 10% 98%;
 
-    --primary: 120 60% 40%;
-    --primary-foreground: 120 5% 10%;
+    --primary: 145 70% 45%;
+    --primary-foreground: 145 5% 10%;
 
-    --secondary: 60 50% 30%;
-    --secondary-foreground: 60 10% 98%;
+    --secondary: 152 30% 20%;
+    --secondary-foreground: 152 10% 98%;
 
-    --muted: 60 30% 20%;
-    --muted-foreground: 60 10% 70%;
+    --muted: 152 30% 20%;
+    --muted-foreground: 152 10% 70%;
 
-    --accent: 35 40% 40%;
-    --accent-foreground: 35 10% 98%;
+    --accent: 25 70% 45%;
+    --accent-foreground: 25 10% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 120 20% 20%;
-    --input: 120 20% 20%;
-    --ring: 120 40% 50%;
+    --border: 145 25% 20%;
+    --input: 145 25% 20%;
+    --ring: 145 70% 50%;
     
-    --sidebar-background: 120 20% 10%;
-    --sidebar-foreground: 120 10% 95.9%;
-    --sidebar-primary: 120 60% 48%;
+    --sidebar-background: 145 30% 12%;
+    --sidebar-foreground: 145 10% 95.9%;
+    --sidebar-primary: 145 70% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 60 20% 15.9%;
-    --sidebar-accent-foreground: 60 10% 95.9%;
-    --sidebar-border: 120 20% 15.9%;
-    --sidebar-ring: 120 91.2% 59.8%;
+    --sidebar-accent: 152 25% 18%;
+    --sidebar-accent-foreground: 152 10% 95.9%;
+    --sidebar-border: 145 25% 18%;
+    --sidebar-ring: 145 91.2% 59.8%;
   }
 }
 
@@ -91,37 +91,65 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Органичные формы для элементов */
-.organic-shape {
-  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+/* Modern styling */
+.glass-card {
+  @apply backdrop-blur-md bg-white/20 border border-white/30;
 }
 
-.organic-button {
-  border-radius: 60% 40% 40% 60% / 60% 30% 70% 40%;
-  transition: border-radius 0.3s ease;
+.earth-gradient {
+  @apply bg-gradient-to-b from-primary/80 to-accent/60;
 }
 
-.organic-button:hover {
-  border-radius: 40% 60% 60% 40% / 40% 60% 40% 60%;
-}
-
-/* Анимации для веток и деревьев */
-.branch {
+/* Animated elements */
+.animate-grow {
   transform-origin: bottom;
-  transition: transform 0.5s ease-out;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Стили для раздела продуктов */
+.animate-grow:hover {
+  transform: scale(1.05);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Product cards */
 .product-card {
-  transform: translateY(50px);
+  transform: translateY(40px);
   opacity: 0;
-  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+              opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  @apply rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow;
 }
 
 .product-card.visible {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* Tree counter */
+.leaf-counter {
+  @apply fixed top-4 right-4 z-50 glass-card p-3 rounded-full 
+         flex items-center gap-2 text-white shadow-lg;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }

@@ -1,83 +1,100 @@
-import { useEffect, useRef } from 'react';
-
-// Типы звуков природы
-const natureAudioTypes = {
-  hover: 'https://freesound.org/data/previews/362/362420_6742917-lq.mp3', // Щебетание птиц
-  click: 'https://freesound.org/data/previews/170/170583_3027498-lq.mp3'  // Звук ветра
-};
+import { ReactNode, useEffect, useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 interface NatureAudioProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const NatureAudio: React.FC<NatureAudioProps> = ({ children }) => {
-  const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({
-    hover: null,
-    click: null
-  });
+const NatureAudio = ({ children }: NatureAudioProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audio] = useState(new Audio('https://assets.mixkit.co/sfx/preview/mixkit-forest-birds-ambience-1210.mp3'));
 
   useEffect(() => {
-    // Инициализация аудио элементов
-    Object.entries(natureAudioTypes).forEach(([type, src]) => {
-      const audio = new Audio();
-      audio.src = src;
-      audio.volume = 0.2;
-      audio.preload = 'auto';
-      audioRefs.current[type] = audio;
-    });
-
-    return () => {
-      // Очистка аудио элементов
-      Object.values(audioRefs.current).forEach(audio => {
-        if (audio) {
-          audio.pause();
-          audio.src = '';
-        }
-      });
-    };
-  }, []);
-
-  // Функция для обработки hover элементов
-  const handleHoverElements = () => {
-    const hoverableElements = document.querySelectorAll('button, a, .hoverable');
+    // Настраиваем аудио
+    audio.loop = true;
+    audio.volume = 0.2;
     
-    hoverableElements.forEach(element => {
-      element.addEventListener('mouseenter', () => {
-        playSound('hover');
-      });
-      
-      element.addEventListener('click', () => {
-        playSound('click');
-      });
-    });
-
+    // При уходе со страницы останавливаем звук
     return () => {
-      hoverableElements.forEach(element => {
-        element.removeEventListener('mouseenter', () => playSound('hover'));
-        element.removeEventListener('click', () => playSound('click'));
-      });
-    };
-  };
-
-  useEffect(() => {
-    const cleanup = handleHoverElements();
-    return cleanup;
-  }, []);
-
-  // Воспроизведение звука
-  const playSound = (type: string) => {
-    const audio = audioRefs.current[type];
-    if (audio) {
-      // Сбрасываем текущее воспроизведение
+      audio.pause();
       audio.currentTime = 0;
-      // Воспроизводим звук
-      audio.play().catch(error => {
-        console.error('Ошибка воспроизведения аудио:', error);
-      });
+    };
+  }, [audio]);
+
+  // Обработчик переключения звука
+  const toggleAudio = () => {
+    if (isPlaying) {
+      audio.pause();
+    } else {
+      try {
+        audio.play().catch(() => {
+          console.log('Audio play prevented by browser');
+        });
+      } catch (e) {
+        console.log('Audio error', e);
+      }
     }
+    setIsPlaying(!isPlaying);
   };
 
-  return <>{children}</>;
+  // Настройка звуков при наведении на интерактивные элементы
+  useEffect(() => {
+    // Функция для создания и воспроизведения звука при наведении
+    const playHoverSound = (e: MouseEvent) => {
+      // Проверяем, что элемент интерактивный (кнопка, ссылка)
+      const target = e.target as HTMLElement;
+      const isInteractive = 
+        target.tagName === 'BUTTON' || 
+        target.tagName === 'A' ||
+        target.closest('button') || 
+        target.closest('a');
+      
+      if (isInteractive && isPlaying) {
+        const hoverSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-grass-movement-590.mp3');
+        hoverSound.volume = 0.1;
+        try {
+          hoverSound.play().catch(() => {});
+        } catch (e) {}
+      }
+    };
+    
+    // Добавляем слушатель события наведения
+    document.addEventListener('mouseover', playHoverSound);
+    
+    return () => {
+      document.removeEventListener('mouseover', playHoverSound);
+    };
+  }, [isPlaying]);
+
+  return (
+    <>
+      {children}
+      
+      {/* Кнопка управления звуком */}
+      <button 
+        onClick={toggleAudio}
+        className="fixed bottom-6 left-6 z-50 p-3 glass-card rounded-full transition-all duration-300 hover:scale-110 text-white"
+        aria-label={isPlaying ? 'Выключить звуки природы' : 'Включить звуки природы'}
+      >
+        {isPlaying ? (
+          <Volume2 className="h-5 w-5" />
+        ) : (
+          <VolumeX className="h-5 w-5" />
+        )}
+        
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-1 rounded opacity-0 hover:opacity-100 focus:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          {isPlaying ? 'Выключить звуки природы' : 'Включить звуки природы'}
+        </div>
+        
+        {/* Анимация звуковых волн */}
+        {isPlaying && (
+          <div className="absolute top-0 left-0 right-0 bottom-0 -z-10">
+            <span className="absolute inset-0 rounded-full animate-ping bg-primary/20"></span>
+          </div>
+        )}
+      </button>
+    </>
+  );
 };
 
 export default NatureAudio;

@@ -82,7 +82,7 @@ const Index = () => {
         </section>
         
         {/* Футер */}
-        <footer className="bg-nature-forest text-white py-8 relative z-10">
+        <footer className="bg-[#38a169] text-white py-8 relative z-10">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="mb-4 md:mb-0">
@@ -90,10 +90,10 @@ const Index = () => {
                 <p>© 2025 Все права защищены</p>
               </div>
               <div className="flex gap-4">
-                <a href="#" className="hover:text-nature-leaf transition-colors">О нас</a>
-                <a href="#" className="hover:text-nature-leaf transition-colors">Продукты</a>
-                <a href="#" className="hover:text-nature-leaf transition-colors">Миссия</a>
-                <a href="#" className="hover:text-nature-leaf transition-colors">Контакты</a>
+                <a href="#" className="hover:text-white/80 transition-colors">О нас</a>
+                <a href="#" className="hover:text-white/80 transition-colors">Продукты</a>
+                <a href="#" className="hover:text-white/80 transition-colors">Миссия</a>
+                <a href="#" className="hover:text-white/80 transition-colors">Контакты</a>
               </div>
             </div>
           </div>

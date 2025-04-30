@@ -1,27 +1,29 @@
 import { useEffect, useRef } from 'react';
+import { ShoppingCart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-// Список эко-продуктов
+// Обновленный список современных эко-продуктов
 const products = [
   {
     id: 1,
-    name: 'Эко-сумка',
-    description: 'Многоразовая сумка из органического хлопка',
-    price: '590 ₽',
-    image: 'https://images.unsplash.com/photo-1597520691332-d3f71bf20946?q=80&w=400'
+    name: 'Экосумка из конопли',
+    description: 'Прочная сумка из органической конопли с нулевым углеродным следом',
+    price: '1 290 ₽',
+    image: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=500'
   },
   {
     id: 2,
-    name: 'Бамбуковая зубная щетка',
-    description: 'Биоразлагаемая щетка из бамбука',
-    price: '250 ₽',
-    image: 'https://images.unsplash.com/photo-1559674824-10f17b11a2a5?q=80&w=400'
+    name: 'Бамбуковый набор для ухода',
+    description: 'Зубная щётка, расчёска и футляр из экологичного бамбука',
+    price: '890 ₽',
+    image: 'https://images.unsplash.com/photo-1584949511343-8795d8ec9d13?q=80&w=500'
   },
   {
     id: 3,
-    name: 'Моющее средство',
-    description: 'Натуральное средство без химикатов',
-    price: '450 ₽',
-    image: 'https://images.unsplash.com/photo-1585441695325-21557c7c3e4e?q=80&w=400'
+    name: 'Многоразовые бутылки',
+    description: 'Стильная стеклянная бутылка с силиконовым покрытием',
+    price: '1 490 ₽',
+    image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=500'
   }
 ];
 
@@ -39,7 +41,8 @@ const ProductsSection = () => {
         });
       },
       {
-        threshold: 0.1, // Показывать, когда хотя бы 10% элемента видно
+        threshold: 0.1, 
+        rootMargin: '0px 0px -100px 0px'
       }
     );
 
@@ -55,45 +58,81 @@ const ProductsSection = () => {
     };
   }, []);
 
+  // Воспроизведение звука при наведении на кнопку
+  const playHoverSound = () => {
+    const audio = new Audio('/leaf-rustle.mp3');
+    audio.volume = 0.2;
+    try {
+      audio.play().catch(() => {
+        console.log('Audio play prevented by browser');
+      });
+    } catch (e) {
+      console.log('Audio error', e);
+    }
+  };
+
   return (
-    <section className="py-16 relative">
-      <h2 className="text-4xl font-bold text-center mb-12 text-nature-forest">Наши продукты</h2>
+    <section className="py-24 relative">
+      <div className="bg-black/40 backdrop-blur-sm rounded-xl max-w-4xl mx-auto mb-12 px-8 py-6">
+        <h2 className="text-5xl font-bold text-center mb-4 text-white font-playfair">Эко-товары</h2>
+        <p className="text-center text-white/90 max-w-2xl mx-auto mb-4 text-lg">
+          Каждый продукт создан с заботой о природе и вашем благополучии. 
+          При покупке любого товара мы сажаем одно дерево.
+        </p>
+      </div>
       
-      {/* Декоративная земля внизу раздела */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-nature-soil rounded-t-[50%] z-0"></div>
+      {/* Современный градиент внизу раздела */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#f0fdf4] to-transparent"></div>
       
-      <div className="container mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {products.map((product, index) => (
             <div
               key={product.id}
               ref={(el) => (productRefs.current[index] = el)}
-              className="product-card bg-white rounded-lg overflow-hidden shadow-lg transform transition-all"
+              className="product-card bg-white rounded-xl shadow-xl overflow-hidden transform hover:-translate-y-2 transition-all duration-300"
               style={{ transitionDelay: `${index * 0.15}s` }}
             >
-              <div className="relative">
+              <div className="relative overflow-hidden group h-64">
                 <img 
                   src={product.image} 
                   alt={product.name} 
-                  className="w-full h-48 object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                {/* Декоративные листья */}
-                <div className="absolute -bottom-2 left-0 w-full">
-                  <div className="flex justify-center">
-                    <div className="w-8 h-6 bg-nature-leaf rotate-45 rounded-tl-full"></div>
-                    <div className="w-8 h-6 bg-nature-moss -rotate-45 rounded-tr-full"></div>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold mb-2 text-[#276749]">{product.name}</h3>
+                <p className="text-gray-600 mb-6 text-sm">{product.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-bold text-[#2f855a]">{product.price}</span>
+                  <Button 
+                    size="sm" 
+                    onMouseEnter={playHoverSound}
+                    className="text-sm gap-2 bg-[#38a169] hover:bg-[#2f855a] rounded-lg shadow-md"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    <span>В корзину</span>
+                  </Button>
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-nature-forest mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-3">{product.description}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-nature-earth">{product.price}</span>
-                  <button className="organic-button bg-nature-leaf text-white py-1 px-4 hover:bg-nature-forest transition-colors duration-300">
-                    Купить
-                  </button>
-                </div>
+              
+              {/* Современные корни */}
+              <div className="absolute -bottom-3 left-0 right-0 flex justify-center">
+                <svg viewBox="0 0 100 20" className="w-full h-12 text-[#38a169]/10">
+                  <path 
+                    d="M0,0 Q50,40 100,0" 
+                    stroke="currentColor" 
+                    strokeWidth="1.5" 
+                    fill="none" 
+                  />
+                  <path 
+                    d="M30,0 Q40,20 50,15 Q60,10 70,0" 
+                    stroke="currentColor" 
+                    strokeWidth="1.5" 
+                    fill="none" 
+                  />
+                </svg>
               </div>
             </div>
           ))}

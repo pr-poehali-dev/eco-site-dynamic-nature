@@ -4,6 +4,7 @@ type TimeOfDay = 'morning' | 'day' | 'evening' | 'night';
 
 const DynamicBackground = () => {
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('day');
+  const [coordinates, setCoordinates] = useState<{lat: number; lon: number} | null>(null);
 
   useEffect(() => {
     // Определение времени суток на основе текущего часа
@@ -28,52 +29,81 @@ const DynamicBackground = () => {
       setTimeOfDay(determineTimeOfDay());
     }, 15 * 60 * 1000);
 
+    // Получаем геолокацию, если доступна
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoordinates({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
+        },
+        () => {
+          console.log('Geolocation permissions denied');
+        }
+      );
+    }
+
     return () => clearInterval(intervalId);
   }, []);
 
-  // Определяем задний фон в зависимости от времени суток
+  // Определяем задний фон в зависимости от времени суток - более современные изображения
   const getBackgroundImage = () => {
     switch (timeOfDay) {
       case 'morning':
-        return 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?q=80&w=1920';
+        return 'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?q=80&w=2000';
       case 'day':
-        return 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1920';
+        return 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=2000';
       case 'evening':
-        return 'https://images.unsplash.com/photo-1570641963303-92ce4845ed4c?q=80&w=1920';
+        return 'https://images.unsplash.com/photo-1470770903676-69b98201ea1c?q=80&w=2000';
       case 'night':
-        return 'https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1920';
+        return 'https://images.unsplash.com/photo-1532978379173-523e16f371f4?q=80&w=2000';
       default:
-        return 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=1920';
+        return 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=2000';
     }
   };
 
   // Определяем место в зависимости от времени суток
   const getLocationName = () => {
+    let baseName = '';
+    
     switch (timeOfDay) {
       case 'morning':
-        return 'Утренний лес';
+        baseName = 'Утренний лес';
+        break;
       case 'day':
-        return 'Дневной лес';
+        baseName = 'Дневной лес';
+        break;
       case 'evening':
-        return 'Вечерние горы';
+        baseName = 'Вечерние горы';
+        break;
       case 'night':
-        return 'Ночной лес';
+        baseName = 'Ночной лес';
+        break;
       default:
-        return 'Природа';
+        baseName = 'Природа';
     }
+    
+    // Добавляем координаты если они есть
+    if (coordinates) {
+      return `${baseName} • ${coordinates.lat.toFixed(2)}°, ${coordinates.lon.toFixed(2)}°`;
+    }
+    
+    return baseName;
   };
 
   return (
     <div 
-      className="fixed inset-0 -z-10 transition-opacity duration-1000"
+      className="fixed inset-0 -z-10 transition-all duration-2000"
       style={{
         backgroundImage: `url(${getBackgroundImage()})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-30" />
-      <div className="absolute bottom-4 right-4 text-white bg-black bg-opacity-50 p-2 rounded-lg text-sm">
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" />
+      <div className="absolute bottom-6 right-6 bg-black/30 backdrop-blur-md text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg">
+        <div className="w-2 h-2 rounded-full bg-[#38a169] animate-pulse"></div>
         {getLocationName()}
       </div>
     </div>

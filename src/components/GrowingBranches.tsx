@@ -1,87 +1,107 @@
-import { useEffect, useRef } from 'react';
-
-interface Branch {
-  id: number;
-  element: HTMLDivElement;
-  shown: boolean;
-}
+import { useEffect, useState } from 'react';
 
 const GrowingBranches = () => {
-  const branchesRef = useRef<Branch[]>([]);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Создаем ветки
-    const createBranches = () => {
-      if (!containerRef.current) return;
-      
-      // Очищаем предыдущие ветки
-      branchesRef.current.forEach(branch => {
-        branch.element.remove();
-      });
-      branchesRef.current = [];
-
-      // Создаем новые ветки
-      for (let i = 0; i < 8; i++) {
-        const branch = document.createElement('div');
-        branch.className = `branch absolute w-1 bg-nature-bark opacity-0 transition-all duration-1000`;
-        
-        // Случайные параметры для разных веток
-        const height = 80 + Math.random() * 200; // высота от 80 до 280px
-        const left = 10 + Math.random() * 80; // позиция слева от 10% до 90%
-        const delay = Math.random() * 0.5; // задержка до 0.5 секунд
-        const rotation = -20 + Math.random() * 40; // поворот от -20 до 20 градусов
-        
-        branch.style.height = `${height}px`;
-        branch.style.left = `${left}%`;
-        branch.style.transitionDelay = `${delay}s`;
-        branch.style.transform = `rotate(${rotation}deg)`;
-        branch.style.bottom = '0';
-        
-        containerRef.current.appendChild(branch);
-        
-        branchesRef.current.push({
-          id: i,
-          element: branch,
-          shown: false
-        });
-      }
-    };
-
-    createBranches();
-
-    // Функция для проверки видимости веток при скролле
     const handleScroll = () => {
-      branchesRef.current.forEach(branch => {
-        const rect = branch.element.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight;
-        
-        if (isVisible && !branch.shown) {
-          branch.element.classList.add('opacity-100');
-          branch.shown = true;
-        } else if (!isVisible && branch.shown) {
-          branch.element.classList.remove('opacity-100');
-          branch.shown = false;
-        }
-      });
+      setScrollY(window.scrollY);
     };
 
-    // Добавляем обработчик скролла
-    window.addEventListener('scroll', handleScroll);
-    // Запускаем обработчик сразу для уже видимых элементов
-    handleScroll();
+    // Добавляем слушатель события прокрутки
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
+  // Вычисляем процент прокрутки для анимации веток
+  const calcGrowthPercent = () => {
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    return Math.min((scrollY / maxScroll) * 100, 100);
+  };
+
+  const growthPercent = calcGrowthPercent();
+
   return (
-    <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden">
-      {/* Ветки будут добавлены динамически */}
-    </div>
+    <>
+      {/* Левая ветка */}
+      <div 
+        className="fixed left-0 bottom-0 z-10 w-48 h-screen pointer-events-none"
+        style={{ opacity: Math.min(0.2 + (growthPercent / 100), 0.8) }}
+      >
+        <svg 
+          viewBox="0 0 100 500" 
+          className="h-full w-full"
+          style={{ 
+            filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.2))',
+          }}
+        >
+          <path 
+            d={`M 0,500 Q 40,${500 - growthPercent * 2} 30,${500 - growthPercent * 4}`} 
+            stroke="#4B9F6C" 
+            strokeWidth="2" 
+            fill="none"
+            style={{ 
+              strokeDasharray: 1000, 
+              strokeDashoffset: 1000 - growthPercent * 10,
+              transition: 'stroke-dashoffset 0.5s ease-out'
+            }}
+          />
+          {/* Листья */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <circle 
+              key={i}
+              cx={25 + (i % 2) * 10} 
+              cy={500 - growthPercent * 4 + 80 - i * 20} 
+              r={Math.max(0, growthPercent / 20 - i / 2)}
+              fill="#6BC589"
+              opacity={Math.max(0, (growthPercent - i * 10) / 100)}
+              style={{ transition: 'all 0.3s ease-out' }}
+            />
+          ))}
+        </svg>
+      </div>
+
+      {/* Правая ветка */}
+      <div 
+        className="fixed right-0 bottom-0 z-10 w-48 h-screen pointer-events-none"
+        style={{ opacity: Math.min(0.2 + (growthPercent / 100), 0.8) }}
+      >
+        <svg 
+          viewBox="0 0 100 500" 
+          className="h-full w-full"
+          style={{ 
+            filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.2))',
+          }}
+        >
+          <path 
+            d={`M 100,500 Q 60,${500 - growthPercent * 2.2} 70,${500 - growthPercent * 4.2}`} 
+            stroke="#4B9F6C" 
+            strokeWidth="2" 
+            fill="none"
+            style={{ 
+              strokeDasharray: 1000, 
+              strokeDashoffset: 1000 - growthPercent * 10,
+              transition: 'stroke-dashoffset 0.5s ease-out'
+            }}
+          />
+          {/* Листья */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <circle 
+              key={i}
+              cx={75 - (i % 2) * 10} 
+              cy={500 - growthPercent * 4.2 + 80 - i * 20} 
+              r={Math.max(0, growthPercent / 20 - i / 2)}
+              fill="#6BC589"
+              opacity={Math.max(0, (growthPercent - i * 10) / 100)}
+              style={{ transition: 'all 0.3s ease-out' }}
+            />
+          ))}
+        </svg>
+      </div>
+    </>
   );
 };
 
